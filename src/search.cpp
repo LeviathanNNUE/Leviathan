@@ -64,7 +64,7 @@ namespace {
 
   // Futility margin
   Value futility_margin(Depth d, bool improving) {
-    return Value(166 * (d - improving));
+    return Value(161 * (d - improving));
   }
 
   // Reductions lookup table, initialized at startup
@@ -72,7 +72,9 @@ namespace {
 
   Depth reduction(bool i, Depth d, int mn, Value delta, Value rootDelta) {
     int r = Reductions[d] * Reductions[mn];
-    return (r + 1500 - int(delta) * 1024 / int(rootDelta)) / 1024 + (!i && r > 930);
+    return (r + 1462 - int(delta) * 1057 / int(rootDelta)) / 1024 
+           + (!i && r > 916) 
+           + (r > 1350 && !i);
   }
 
   constexpr int futility_move_count(bool improving, Depth depth) {
@@ -82,7 +84,7 @@ namespace {
 
   // History and stats update bonus, based on depth
   int stat_bonus(Depth d) {
-    return std::min((11 * d + 286) * d - 358 , 1615);
+    return std::min((11 * d + 294) * d - 366 , 1644);
   }
 
   // Add a small random component to draw evaluations to avoid 3-fold blindness
@@ -826,7 +828,7 @@ namespace {
         assert(eval - beta >= 0);
 
         // Null move dynamic reduction based on depth, eval and complexity of position
-        Depth R = std::min(int(eval - beta) / 166, 7) + depth / 3 + 4 - (complexity > 810);
+        Depth R = std::min(int(eval - beta) / 161, 7) + depth / 3 + 4 - (complexity > 796);
 
         ss->currentMove = MOVE_NULL;
         ss->continuationHistory = &thisThread->continuationHistory[0][0][NO_PIECE][0];
@@ -862,7 +864,7 @@ namespace {
         }
     }
 
-    probCutBeta = beta + 182 - 57 * improving;
+    probCutBeta = beta + 177 - 54 * improving;
 
     // Step 10. ProbCut (~4 Elo)
     // If we have a good enough capture (or queen promotion) and a reduced search returns a value
@@ -1082,8 +1084,8 @@ moves_loop: // When in check, search starts here
               && (tte->bound() & BOUND_LOWER)
               &&  tte->depth() >= depth - 3)
           {
-              Value singularBeta = ttValue - (3 + (ss->ttPv && !PvNode)) * depth;
-              Depth singularDepth = (depth - 1) / 2;
+              Value singularBeta = ttValue - (3 + (ss->ttPv && !PvNode)) * depth / 2 * 2;
+              Depth singularDepth = (depth - 1 + (depth > 11)) / 2;
 
               ss->excludedMove = move;
               value = search<NonPV>(pos, ss, singularBeta - 1, singularBeta, singularDepth, cutNode);
