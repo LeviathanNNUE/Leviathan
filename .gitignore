@@ -1,0 +1,37 @@
+# Build artifacts
+*.o
+*.exe
+*.a
+*.so
+*.dll
+stockfish
+
+# Dependencies
+*.nnue
+
+# Debug files
+*.dSYM/
+*.pdb
+
+# Generated files
+.depend
+profdir/
+*.profdata
+*.profraw
+*.gcda
+*.gcno
+*.s
+*.lt*
+*.args*
+*.res
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
