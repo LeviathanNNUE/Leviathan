@@ -1113,6 +1113,19 @@ Value Eval::evaluate(const Position& pos) {
 
        complexity = (137 * complexity + 137 * abs(nnue - psq)) / 256;
        optimism = optimism * (255 + complexity) / 256;
+       
+       // Aggressive play bonus: use cached value from thread to avoid UCI option lookup overhead.
+       // Scales the aggression bonus by position complexity: base bonus is aggressionLevel/2 (128/256),
+       // plus additional complexity-based bonus, making the engine favor sharp, tactical positions.
+       // Note: The double complexity scaling (line 1115 + this) is intentional to amplify aggressive
+       // play in complex positions where tactical opportunities are more likely.
+       int aggressionLevel = pos.this_thread()->aggressive;
+       if (aggressionLevel > 0)
+       {
+           int aggressionBonus = aggressionLevel * (128 + complexity) / 256;
+           optimism += Value(aggressionBonus);
+       }
+       
        v = (nnue * scale + optimism * (scale - 848)) / 1024;
 
        if (pos.is_chess960())
@@ -1150,6 +1163,7 @@ std::string Eval::trace(Position& pos) {
   pos.this_thread()->bestValue       = VALUE_ZERO;
   pos.this_thread()->optimism[WHITE] = VALUE_ZERO;
   pos.this_thread()->optimism[BLACK] = VALUE_ZERO;
+  pos.this_thread()->aggressive      = 0;
 
   v = Evaluation<TRACE>(pos).value();
 

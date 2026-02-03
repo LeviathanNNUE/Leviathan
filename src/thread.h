@@ -65,6 +65,7 @@ public:
   int selDepth, nmpMinPly;
   Color nmpColor;
   Value bestValue, optimism[COLOR_NB];
+  int aggressive; // Cached Aggressive UCI option for bold/brilliant play
 
   Position rootPos;
   StateInfo rootState;

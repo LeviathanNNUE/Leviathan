@@ -324,6 +324,9 @@ void Thread::search() {
 
   size_t multiPV = size_t(Options["MultiPV"]);
   Skill skill(Options["Skill Level"], Options["UCI_LimitStrength"] ? int(Options["UCI_Elo"]) : 0);
+  
+  // Cache Aggressive option value - higher values make engine prefer bold, attacking play
+  aggressive = int(Options["Aggressive"]);
 
   // When playing with strength handicap enable MultiPV search that we will
   // use behind the scenes to retrieve a set of possible moves.
@@ -381,6 +384,12 @@ void Thread::search() {
               beta  = std::min(prev + delta, VALUE_INFINITE);
 
               int opt = 118 * prev / (std::abs(prev) + 174);
+              
+              // Add aggressive bonus to optimism for bold/brilliant play.
+              // Divide by 2 to scale the 0-200 range to a reasonable optimism bonus (0-100 centipawns).
+              if (aggressive > 0)
+                  opt += aggressive / 2;
+              
               optimism[ us] = Value(opt);
               optimism[~us] = -optimism[us];
           }

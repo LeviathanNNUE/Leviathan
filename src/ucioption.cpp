@@ -92,6 +92,7 @@ void init(OptionsMap& o) {
   o["Book2 Depth"]           << Option(100, 1, 350);
   o["Use NNUE"]              << Option(true, on_use_NNUE);
   o["EvalFile"]              << Option(EvalFileDefaultName, on_eval_file);
+  o["Aggressive"]            << Option(0, 0, 200);
 }
 
 
