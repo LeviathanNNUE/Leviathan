@@ -1113,6 +1113,17 @@ Value Eval::evaluate(const Position& pos) {
 
        complexity = (137 * complexity + 137 * abs(nnue - psq)) / 256;
        optimism = optimism * (255 + complexity) / 256;
+       
+       // Aggressive play bonus: add extra optimism based on Aggressive UCI option
+       // This makes the engine favor bold, attacking positions
+       int aggressive = int(Options["Aggressive"]);
+       if (aggressive > 0)
+       {
+           // Scale aggression bonus by position complexity - more complex = more aggressive
+           int aggressionBonus = aggressive * (128 + complexity) / 256;
+           optimism += Value(aggressionBonus);
+       }
+       
        v = (nnue * scale + optimism * (scale - 848)) / 1024;
 
        if (pos.is_chess960())

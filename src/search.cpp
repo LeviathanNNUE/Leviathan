@@ -381,6 +381,12 @@ void Thread::search() {
               beta  = std::min(prev + delta, VALUE_INFINITE);
 
               int opt = 118 * prev / (std::abs(prev) + 174);
+              
+              // Add aggressive bonus to optimism for bold/brilliant play
+              int aggressive = int(Options["Aggressive"]);
+              if (aggressive > 0)
+                  opt += aggressive / 2;
+              
               optimism[ us] = Value(opt);
               optimism[~us] = -optimism[us];
           }
