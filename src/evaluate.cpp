@@ -1115,12 +1115,14 @@ Value Eval::evaluate(const Position& pos) {
        optimism = optimism * (255 + complexity) / 256;
        
        // Aggressive play bonus: use cached value from thread to avoid UCI option lookup overhead.
-       // Scales the aggression bonus by position complexity: base bonus is aggressive/2 (128/256),
+       // Scales the aggression bonus by position complexity: base bonus is aggressionLevel/2 (128/256),
        // plus additional complexity-based bonus, making the engine favor sharp, tactical positions.
-       int aggressive = pos.this_thread()->aggressive;
-       if (aggressive > 0)
+       // Note: The double complexity scaling (line 1115 + this) is intentional to amplify aggressive
+       // play in complex positions where tactical opportunities are more likely.
+       int aggressionLevel = pos.this_thread()->aggressive;
+       if (aggressionLevel > 0)
        {
-           int aggressionBonus = aggressive * (128 + complexity) / 256;
+           int aggressionBonus = aggressionLevel * (128 + complexity) / 256;
            optimism += Value(aggressionBonus);
        }
        
