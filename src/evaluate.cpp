@@ -193,17 +193,17 @@ using namespace Trace;
 namespace {
 
   // Threshold for lazy and space evaluation
-  constexpr Value LazyThreshold1    =  Value(3631);
-  constexpr Value LazyThreshold2    =  Value(2084);
-  constexpr Value SpaceThreshold    =  Value(11551);
+  constexpr Value LazyThreshold1    =  Value(3722);
+  constexpr Value LazyThreshold2    =  Value(2149);
+  constexpr Value SpaceThreshold    =  Value(11687);
 
   // KingAttackWeights[PieceType] contains king attack weights by piece type
-  constexpr int KingAttackWeights[PIECE_TYPE_NB] = { 0, 0, 79, 48, 45, 14 };
+  constexpr int KingAttackWeights[PIECE_TYPE_NB] = { 0, 0, 81, 50, 47, 15 };
 
   // SafeCheck[PieceType][single/multiple] contains safe check bonus by piece type,
   // higher if multiple safe checks are possible for that piece type.
   constexpr int SafeCheck[][2] = {
-      {}, {}, {805, 1292}, {650, 984}, {1071, 1886}, {730, 1128}
+      {}, {}, {823, 1318}, {663, 1004}, {1092, 1924}, {745, 1152}
   };
 
 #define S(mg, eg) make_score(mg, eg)
